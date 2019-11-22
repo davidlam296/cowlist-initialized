@@ -1,9 +1,11 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require('express');
+const parser = require('body-parser');
+const router = require('./routes.js');
+const app = express();
+const port = process.env.PORT || 3000;
 
-app.use(express.static('./client/dist'))
+app.use(parser.json());
+app.use(express.static('./client/dist'));
+app.use('/', router);
 
-app.get('/', (req, res) => res.send('Hello World!'))
-
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
