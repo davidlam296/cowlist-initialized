@@ -9,6 +9,26 @@ export default class CowList extends React.Component {
     };
 
     this.select = this.changeSelected.bind(this);
+    this.delete = this.deleteCow.bind(this);
+    this.update = this.updateCow.bind(this);
+  }
+
+  updateCow(cow, type) {
+    const update = prompt(`Enter new ${type}`);
+    const updatedCow = {
+      _id: cow._id
+    }
+    if (type === 'name') { updatedCow.description = cow.description; }
+    else if (type === 'description') { updatedCow.name = cow.name; }
+
+    if(Boolean(update)) {
+      updatedCow[type] = update;
+      this.props.update(updatedCow);
+    }
+  }
+
+  deleteCow(cow) {
+    this.props.delete(cow);
   }
 
   changeSelected(cow) {
@@ -22,18 +42,24 @@ export default class CowList extends React.Component {
     <div>
       <h2>All the Cows:</h2>
       <div><MainCow cow={this.state.selectedCow}/></div>
-      <div>
-        <ol>
+      <table>
+        <tbody>
           {
             this.props.cows.map(cow => {
-              return (this.state.selectedCow.id === cow.id) ? (<div></div>) :
-              (
-                <li onClick={() => this.select(cow)}>cow.name</li>
-              )
+              if (this.state.selectedCow._id !== cow._id) {
+                return (
+                  <tr key={cow._id}>
+                    <td onClick={() => this.select(cow)}>{cow.name}</td>
+                    <td><button onClick={() => this.update(cow, 'name')}>New Name</button></td>
+                    <td><button onClick={() => this.update(cow, 'description')}>New Description</button></td>
+                    <td><button onClick={() => this.delete(cow)}>To the Slaughterhouse...</button></td>
+                  </tr>
+                )
+              }
             })
           }
-        </ol>
-      </div>
+        </tbody>
+      </table>
     </div>
     );
   }

@@ -2,26 +2,49 @@ const router = require('express').Router();
 const { Cows } = require('../db/index.js');
 
 router.get('/cows', (req, res) => {
-  res.sendStatus(200);
+  Cows.find()
+    .then(cows => {
+      res.status(200).json(cows)
+    })
+    .catch(err => {
+      console.log('Error ', err)
+      res.sendStatus(500);
+    })
 })
 
 router.post('/cows', (req, res) => {
-  console.log(req.body);
-  Cows.create(req.body)
+  Cows.findOneAndReplace({
+    name: req.body.name
+  }, req.body, {upsert: true}).exec()
     .then(() => {
       res.sendStatus(201);
     })
-    .catch(() => {
+    .catch(err => {
+      console.log('Error ', err);
       res.sendStatus(500);
     })
 })
 
 router.delete('/cows', (req, res) => {
-  res.sendStatus(200);
+  Cows.deleteOne(req.query)
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(err => {
+      res.sendStatus(500);
+    })
 })
 
 router.put('/cows', (req, res) => {
-  res.sendStatus(200);
+  Cows.findOneAndUpdate({
+    _id: req.body._id
+  }, req.body)
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(err => {
+      res.sendStatus(500);
+    })
 })
 
 module.exports = router;

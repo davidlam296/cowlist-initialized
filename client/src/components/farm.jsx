@@ -9,6 +9,7 @@ export default class Farm extends React.Component {
     };
 
     this.change = this.updateInfo.bind(this);
+    this.create = this.createCow.bind(this);
   }
 
   updateInfo(type, text) {
@@ -16,6 +17,17 @@ export default class Farm extends React.Component {
     stateObj[type] = text;
     
     this.setState(stateObj);
+  }
+
+  createCow() {
+    if (this.state.name !== '' && this.state.description !== '') {
+      this.props.addCow({
+        name: this.state.name,
+        description: this.state.description
+      });
+    } else {
+      alert(`Name and/or description can't be empty.`);
+    }
   }
 
   render() {
@@ -34,7 +46,7 @@ export default class Farm extends React.Component {
           </tr>
         </tbody>
       </table>
-      <button>Generate!</button>
+      <button onClick={this.create}>Generate!</button>
     </div>
     );
   }
